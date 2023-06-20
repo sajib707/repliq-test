@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'assets'
 ]
 
 MIDDLEWARE = [
@@ -68,6 +69,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'repliq_tracker.wsgi.application'
+
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
 
 
 # Database
