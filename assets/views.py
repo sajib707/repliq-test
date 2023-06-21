@@ -1,22 +1,27 @@
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 from .models import Company, Employee, Device
 from .serializers import CompanySerializer, EmployeeSerializer, DeviceSerializer
 
-@api_view(['GET'])
-def company_list(request):
-    companies = Company.objects.all()
-    serializer = CompanySerializer(companies, many=True)
-    return Response(serializer.data)
+class CompanyViewSet(ModelViewSet):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
 
-@api_view(['GET'])
-def employee_list(request, company_id):
-    employees = Employee.objects.filter(company__id=company_id)
-    serializer = EmployeeSerializer(employees, many=True)
-    return Response(serializer.data)
+class EmployeeViewSet(ModelViewSet):
+    serializer_class = EmployeeSerializer
 
-@api_view(['GET'])
-def device_list(request, company_id):
-    devices = Device.objects.filter(company__id=company_id)
-    serializer = DeviceSerializer(devices, many=True)
-    return Response(serializer.data)
+    def get_queryset(self):
+        queryset = Employee.objects.all()
+        company_id = self.kwargs.get('company_id') 
+        if company_id:
+            queryset = queryset.filter(company_id=company_id)
+        return queryset
+
+class DeviceViewSet(ModelViewSet):
+    serializer_class = DeviceSerializer
+
+    def get_queryset(self):
+        queryset = Device.objects.all()
+        company_id = self.kwargs.get('company_id') 
+        if company_id:
+            queryset = queryset.filter(company_id=company_id)
+        return queryset
